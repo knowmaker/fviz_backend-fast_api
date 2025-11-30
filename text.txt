@@ -1,0 +1,72 @@
+Описание БД
+Таблица system_types
+id
+name (строка)
+
+Таблица lt
+id
+l_indicate (целое число)
+t_indicate (целое число)
+
+Таблица gk
+id
+g_indicate (целое число)
+k_indicate (целое число)
+name (строка)
+color( формат #______)
+system_type_id (FK на system_types.id)
+
+Таблица quantities
+id
+symbol (строка)
+name (строка)
+unit (строка)
+m_indicate (целое число или обыкновенная дробь, напр 1/2)
+l_indicate (целое число или обыкновенная дробь)
+t_indicate (целое число или обыкновенная дробь)
+i_indicate (целое число или обыкновенная дробь)
+lt_id (FK на lt.id)
+gk_id (FK на gk.id)
+system_type_id (FK на system_types.id)
+
+Таблица law_groups
+id
+name (строка)
+color( формат #______)
+system_type_id (FK на system_types.id)
+
+Таблица laws
+id
+name (строка)
+first_quantity_id (FK на quantities.id)
+second_quantity_id (FK на quantities.id)
+third_quantity_id (FK на quantities.id)
+fourth_quantity_id (FK на quantities.id)
+user_id (FK на users.id)
+law_group_id (FK на law_groups.id)
+system_type_id (FK на system_types.id)
+
+Таблица represents
+id
+title (строка)
+system_type_id (FK на system_types.id)
+is_active (булева)
+is_public (булева)
+user_id (FK на users.id)
+
+Таблица quantities_in_represents PRIMARY KEY (represent_id, active_quantity_id)
+represent_id (FK на represents.id)
+quantity_id (FK на quantities.id)
+
+Таблица users
+id
+email
+password
+last_name (строка)
+first_name (строка)
+patronymic (строка)
+is_confirmed (булева)
+is_admin (булева)
+
+
+

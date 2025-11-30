@@ -1,0 +1,61 @@
+# app/models/law.py
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
+
+from app.db.base import Base
+
+
+class Law(Base):
+    __tablename__ = "laws"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+
+    first_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=True)
+    second_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=True)
+    third_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=True)
+    fourth_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=True)
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True,
+    )
+    law_group_id = Column(
+        Integer,
+        ForeignKey("law_groups.id"),
+        nullable=False,
+        index=True,
+    )
+    system_type_id = Column(
+        Integer,
+        ForeignKey("system_types.id"),
+        nullable=False,
+        index=True,
+    )
+
+    first_quantity = relationship(
+        "Quantity",
+        foreign_keys=[first_quantity_id],
+        back_populates="laws_first",
+    )
+    second_quantity = relationship(
+        "Quantity",
+        foreign_keys=[second_quantity_id],
+        back_populates="laws_second",
+    )
+    third_quantity = relationship(
+        "Quantity",
+        foreign_keys=[third_quantity_id],
+        back_populates="laws_third",
+    )
+    fourth_quantity = relationship(
+        "Quantity",
+        foreign_keys=[fourth_quantity_id],
+        back_populates="laws_fourth",
+    )
+
+    user = relationship("User", back_populates="laws")
+    law_group = relationship("LawGroup", back_populates="laws")
+    system_type = relationship("SystemType", back_populates="laws")
