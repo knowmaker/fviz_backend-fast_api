@@ -11,10 +11,10 @@ class Law(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
 
-    first_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=True)
-    second_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=True)
-    third_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=True)
-    fourth_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=True)
+    first_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=False)
+    second_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=False)
+    third_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=False)
+    fourth_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=False)
 
     user_id = Column(
         Integer,
