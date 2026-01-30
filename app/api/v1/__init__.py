@@ -1,0 +1,4 @@
+# app/api/v1/__init__.py
+from app.api.v1 import lt  # noqa
+from app.api.v1 import users  # noqa
+from app.api.v1 import gk  # noqa
