@@ -2,3 +2,4 @@
 from app.api.v1 import lt  # noqa
 from app.api.v1 import users  # noqa
 from app.api.v1 import gk  # noqa
+from app.api.v1 import quantities  # noqa

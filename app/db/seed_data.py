@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.models.lt import LT
 from app.models.system_type import SystemType
 from app.models.gk import GK
-
+from app.models.quantity import Quantity
 
 def seed_lt(db: Session, csv_path: str | None = None) -> None:
     """
@@ -84,6 +84,43 @@ def seed_gk(db: Session, csv_path: str | None = None) -> None:
                     k_indicate=int(row["k_indicate"]),
                     name=row["name"],
                     color=row["color"],
+                    system_type_id=1,
+                )
+            )
+
+    if rows:
+        db.bulk_save_objects(rows)
+        db.commit()
+
+def seed_quantities(db: Session, csv_path: str | None = None) -> None:
+    if db.query(Quantity).first():
+        return
+
+    if csv_path is None:
+        csv_path = Path(__file__).with_name("quantities.csv")
+    else:
+        csv_path = Path(csv_path)
+
+    if not csv_path.exists():
+        raise FileNotFoundError(f"Файл quantities.csv не найден: {csv_path}")
+
+    rows: list[Quantity] = []
+
+    with csv_path.open(mode="r", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            rows.append(
+                Quantity(
+                    id=int(row["id"]),
+                    symbol=row["symbol"],
+                    name=row["name"],
+                    unit=row["unit"],
+                    m_indicate=row["m_indicate"],
+                    l_indicate=row["l_indicate"],
+                    t_indicate=row["t_indicate"],
+                    i_indicate=row["i_indicate"],
+                    lt_id=int(row["lt_id"]),
+                    gk_id=int(row["gk_id"]),
                     system_type_id=1,
                 )
             )

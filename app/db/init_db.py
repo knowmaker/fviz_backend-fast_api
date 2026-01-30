@@ -1,7 +1,7 @@
 # app/db/init_db.py
 from app.db.session import engine, SessionLocal
 from app.models import Base  # тянет все модели через __init__.py
-from app.db.seed_data import seed_lt, seed_gk, seed_system_types
+from app.db.seed_data import seed_lt, seed_gk, seed_system_types, seed_quantities
 
 
 def init_db() -> None:
@@ -16,6 +16,7 @@ def init_db() -> None:
         seed_system_types(db)
         seed_lt(db)
         seed_gk(db)
+        seed_quantities(db)
     finally:
         db.close()
 
