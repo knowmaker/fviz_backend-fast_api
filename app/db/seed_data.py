@@ -8,6 +8,7 @@ from app.models.lt import LT
 from app.models.system_type import SystemType
 from app.models.gk import GK
 from app.models.quantity import Quantity
+from app.models.law_group import LawGroup
 
 def seed_lt(db: Session, csv_path: str | None = None) -> None:
     """
@@ -121,6 +122,41 @@ def seed_quantities(db: Session, csv_path: str | None = None) -> None:
                     i_indicate=row["i_indicate"],
                     lt_id=int(row["lt_id"]),
                     gk_id=int(row["gk_id"]),
+                    system_type_id=1,
+                )
+            )
+
+    if rows:
+        db.bulk_save_objects(rows)
+        db.commit()
+
+
+def seed_law_groups(db: Session, csv_path: str | None = None) -> None:
+    """
+    Логика как у lt: если таблица НЕ пуста — ничего не делаем.
+    system_type_id всегда = 1.
+    """
+    if db.query(LawGroup).first():
+        return
+
+    if csv_path is None:
+        # app/db/law_groups.csv
+        csv_path = Path(__file__).with_name("law_groups.csv")
+    else:
+        csv_path = Path(csv_path)
+
+    if not csv_path.exists():
+        raise FileNotFoundError(f"Файл law_groups.csv не найден: {csv_path}")
+
+    rows: list[LawGroup] = []
+
+    with csv_path.open(mode="r", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            rows.append(
+                LawGroup(
+                    name=row["name"],
+                    color=row["color"],
                     system_type_id=1,
                 )
             )
