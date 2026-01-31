@@ -52,8 +52,6 @@ def update_user_law(db: Session, user_id: int, law_id: int, data: LawUpdate) -> 
     if data.law_group_id is not None:
         law.law_group_id = data.law_group_id
 
-    # user_id и system_type_id не трогаем
-
     db.add(law)
     db.commit()
     db.refresh(law)
