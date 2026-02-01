@@ -12,14 +12,23 @@ from app.schemas.quantity import (
     QuantityRead,
 )
 from app.services.quantity_service import (
+    get_quantities_by_system_type_by_lt_id,
     get_quantity_by_id,
-    get_quantities_by_lt_id,
     create_quantity,
     update_quantity,
     delete_quantity,
 )
 
 router = APIRouter()
+
+
+@router.get("/by-system-type/{system_type_id}/by-lt/{lt_id}", response_model=list[QuantityReadWithGK])
+def read_quantities_by_system_type_by_lt(
+    system_type_id: int,
+    lt_id: int,
+    db: Session = Depends(get_db),
+):
+    return get_quantities_by_system_type_by_lt_id(db, system_type_id=system_type_id, lt_id=lt_id)
 
 
 @router.get("/{quantity_id}", response_model=QuantityReadWithLTGK)
@@ -31,14 +40,6 @@ def read_quantity_by_id(
     if not q:
         raise HTTPException(status_code=404, detail="Quantity not found")
     return q
-
-
-@router.get("/by-lt/{lt_id}", response_model=list[QuantityReadWithGK])
-def read_quantities_by_lt(
-    lt_id: int,
-    db: Session = Depends(get_db),
-):
-    return get_quantities_by_lt_id(db, lt_id=lt_id)
 
 
 @router.post("/", response_model=QuantityRead, status_code=status.HTTP_201_CREATED)

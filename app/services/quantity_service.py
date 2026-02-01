@@ -5,22 +5,22 @@ from app.models.quantity import Quantity
 from app.schemas.quantity import QuantityCreate, QuantityUpdate
 
 
+def get_quantities_by_system_type_by_lt_id(db: Session, system_type_id: int, lt_id: int) -> list[Quantity]:
+    return (
+        db.query(Quantity)
+        .options(joinedload(Quantity.gk))
+        .filter(Quantity.lt_id == lt_id, Quantity.system_type_id == system_type_id)
+        .order_by(Quantity.id.asc())
+        .all()
+    )
+
+
 def get_quantity_by_id(db: Session, quantity_id: int) -> Quantity | None:
     return (
         db.query(Quantity)
         .options(joinedload(Quantity.lt), joinedload(Quantity.gk))
         .filter(Quantity.id == quantity_id)
         .first()
-    )
-
-
-def get_quantities_by_lt_id(db: Session, lt_id: int) -> list[Quantity]:
-    return (
-        db.query(Quantity)
-        .options(joinedload(Quantity.gk))
-        .filter(Quantity.lt_id == lt_id)
-        .order_by(Quantity.id.asc())
-        .all()
     )
 
 
