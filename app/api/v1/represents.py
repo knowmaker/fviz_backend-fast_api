@@ -2,26 +2,54 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.deps.dependencies import get_db, get_current_user
+from app.deps.dependencies import get_db, get_current_user, get_optional_current_user
 from app.models.user import User
-from app.schemas.represent import RepresentRead, RepresentCreate, RepresentUpdate
+from app.schemas.represent import RepresentRead, RepresentCreate, RepresentUpdate, RepresentViewResponse
 from app.services.represent_service import (
-    get_user_represents,
+    get_user_represents_by_system_type,
     get_user_represent_by_id,
     create_user_represent,
     update_user_represent,
     delete_user_represent,
+    get_active_view_for_user,
+    get_active_view_public,
+    get_view_by_represent_id_for_user,
 )
 
 router = APIRouter()
 
+@router.get("/view", response_model=RepresentViewResponse)
+def read_active_view(
+    db: Session = Depends(get_db),
+    current_user: User | None = Depends(get_optional_current_user),
+):
+    if current_user is not None:
+        rep, quantities = get_active_view_for_user(db, user_id=current_user.id)
+        return RepresentViewResponse(represent=rep, quantities=quantities)
 
-@router.get("/", response_model=list[RepresentRead])
-def read_my_represents(
+    rep, quantities = get_active_view_public(db)
+    return RepresentViewResponse(represent=rep, quantities=quantities)
+
+@router.get("/{represent_id}/view", response_model=RepresentViewResponse)
+def read_represent_view_by_id(
+    represent_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return get_user_represents(db, user_id=current_user.id)
+    result = get_view_by_represent_id_for_user(db, user_id=current_user.id, represent_id=represent_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Represent not found")
+
+    rep, quantities = result
+    return RepresentViewResponse(represent=rep, quantities=quantities)
+
+@router.get("/by-system-type/{system_type_id}", response_model=list[RepresentRead])
+def read_my_represents_by_system_type(
+    system_type_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_user_represents_by_system_type(db, user_id=current_user.id, system_type_id=system_type_id)
 
 
 @router.get("/{represent_id}", response_model=RepresentRead)
@@ -42,7 +70,7 @@ def create_my_represent(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    create_user_represent(db, user_id=current_user.id, data=payload)
+    return create_user_represent(db, user_id=current_user.id, data=payload)
 
 
 @router.patch("/{represent_id}", response_model=RepresentRead)

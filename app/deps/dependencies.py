@@ -10,6 +10,7 @@ from app.core.security import decode_access_token
 from app.models.user import User
 
 bearer_scheme = HTTPBearer()
+optional_bearer_scheme = HTTPBearer(auto_error=False)
 
 def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
@@ -19,15 +20,11 @@ def get_db() -> Generator[Session, None, None]:
         db.close()
 
 
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
-    db: Session = Depends(get_db),
+def _resolve_user_from_credentials(
+    credentials: HTTPAuthorizationCredentials,
+    db: Session,
 ) -> User:
-    """
-    Достаём user_id из JWT, получаем пользователя из БД.
-    Разрешаем доступ только подтверждённым.
-    """
-    token = credentials.credentials  # сам JWT без "Bearer "
+    token = credentials.credentials
 
     try:
         payload = decode_access_token(token)
@@ -48,3 +45,28 @@ def get_current_user(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is not confirmed")
 
     return user
+
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    db: Session = Depends(get_db),
+) -> User:
+    """
+    Обязательная авторизация.
+    """
+    return _resolve_user_from_credentials(credentials, db)
+
+
+def get_optional_current_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(optional_bearer_scheme),
+    db: Session = Depends(get_db),
+) -> User | None:
+    """
+    НЕобязательная авторизация:
+    - если токена нет -> None
+    - если токен есть, но плохой -> 401/403
+    - если токен ок -> User
+    """
+    if credentials is None:
+        return None
+    return _resolve_user_from_credentials(credentials, db)

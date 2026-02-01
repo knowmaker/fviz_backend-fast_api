@@ -1,6 +1,7 @@
 # app/schemas/represent.py
 from pydantic import BaseModel, Field
 
+from app.schemas.quantity import QuantityRead
 
 class RepresentRead(BaseModel):
     id: int
@@ -27,3 +28,8 @@ class RepresentUpdate(BaseModel):
     is_active: bool | None = None
     is_public: bool | None = None
     quantity_ids: list[int] | None = Field(default=None, min_length=1)
+
+
+class RepresentViewResponse(BaseModel):
+    represent: RepresentRead | None
+    quantities: list[QuantityRead]
