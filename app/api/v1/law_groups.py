@@ -6,7 +6,7 @@ from app.deps.dependencies import get_db, get_current_user
 from app.models.user import User
 from app.schemas.law_group import LawGroupCreate, LawGroupUpdate, LawGroupRead
 from app.services.law_group_service import (
-    get_all_law_groups,
+    get_all_law_groups_by_system_type,
     get_law_group_by_id,
     create_law_group,
     update_law_group,
@@ -16,9 +16,12 @@ from app.services.law_group_service import (
 router = APIRouter()
 
 
-@router.get("/", response_model=list[LawGroupRead])
-def read_all_law_groups(db: Session = Depends(get_db)):
-    return get_all_law_groups(db)
+@router.get("/by-system-type/{system_type_id}", response_model=list[LawGroupRead])
+def read_all_law_groups_by_system_type(
+        system_type_id: int,
+        db: Session = Depends(get_db)
+):
+    return get_all_law_groups_by_system_type(db, system_type_id=system_type_id)
 
 
 @router.get("/{law_group_id}", response_model=LawGroupRead)

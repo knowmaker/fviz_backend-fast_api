@@ -5,8 +5,13 @@ from app.models.law_group import LawGroup
 from app.schemas.law_group import LawGroupCreate, LawGroupUpdate
 
 
-def get_all_law_groups(db: Session) -> list[LawGroup]:
-    return db.query(LawGroup).order_by(LawGroup.id.asc()).all()
+def get_all_law_groups_by_system_type(db: Session, system_type_id: int) -> list[LawGroup]:
+    return (
+        db.query(LawGroup)
+        .filter(LawGroup.system_type_id == system_type_id)
+        .order_by(LawGroup.id.asc())
+        .all()
+    )
 
 
 def get_law_group_by_id(db: Session, law_group_id: int) -> LawGroup | None:
