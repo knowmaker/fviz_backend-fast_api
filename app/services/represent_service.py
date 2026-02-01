@@ -82,14 +82,32 @@ def get_active_view_for_user(db: Session, user_id: int) -> tuple[Represent | Non
         return None, []
     return rep, list(rep.quantities)
 
-def get_active_view_public(db: Session) -> tuple[None, list[Quantity]]:
+def get_active_view_public(db: Session) -> tuple[Represent, list[Quantity]]:
+    system_type_id = (
+        db.query(Quantity.system_type_id)
+        .group_by(Quantity.system_type_id)
+        .order_by(func.random())
+        .limit(1)
+        .scalar()
+    )
+
     quantities = (
         db.query(Quantity)
-        .distinct(Quantity.lt_id)  # в PostgreSQL -> DISTINCT ON (lt_id)
+        .filter(Quantity.system_type_id == system_type_id)
+        .distinct(Quantity.lt_id)
         .order_by(Quantity.lt_id.asc(), func.random())
         .all()
     )
-    return None, quantities
+
+    data = {
+        "id": 0,
+        "title": "Случайное",
+        "system_type_id": system_type_id,
+        "is_active": False,
+        "is_public": False,
+        "user_id": 0,
+    }
+    return data, quantities
 
 def get_view_by_represent_id_for_user(
     db: Session,
