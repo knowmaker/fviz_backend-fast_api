@@ -43,12 +43,6 @@ def update_user_law(db: Session, user_id: int, law_id: int, data: LawUpdate) -> 
     if data.name is not None:
         law.name = data.name
 
-    if data.quantities is not None:
-        law.first_quantity_id = data.quantities.first_quantity_id
-        law.second_quantity_id = data.quantities.second_quantity_id
-        law.third_quantity_id = data.quantities.third_quantity_id
-        law.fourth_quantity_id = data.quantities.fourth_quantity_id
-
     if data.law_group_id is not None:
         law.law_group_id = data.law_group_id
 
