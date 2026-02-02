@@ -1,7 +1,7 @@
 # app/main.py
 from fastapi import FastAPI
 
-from app.api.v1 import lt, gk, users, quantities, law_groups, laws, represents
+from app.api.v1 import lt, gk, users, quantities, law_groups, laws, represents, system_types
 
 app = FastAPI(
     title="FViZ Backend",
@@ -9,6 +9,7 @@ app = FastAPI(
 )
 
 app.include_router(lt.router, prefix="/lt", tags=["lt"])
+app.include_router(system_types.router, prefix="/system_types", tags=["system_types"])
 app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(gk.router, prefix="/gk", tags=["gk"])
 app.include_router(quantities.router, prefix="/quantities", tags=["quantities"])

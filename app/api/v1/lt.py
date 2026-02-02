@@ -13,8 +13,4 @@ router = APIRouter()
 
 @router.get("/", response_model=List[LTRead])
 def read_all_lt(db: Session = Depends(get_db)):
-    """
-    Получить все записи из таблицы lt.
-    Маршрут: GET /lt
-    """
     return get_all_lt(db)
