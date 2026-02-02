@@ -41,9 +41,6 @@ def _resolve_user_from_credentials(
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
 
-    if not user.is_confirmed:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is not confirmed")
-
     return user
 
 

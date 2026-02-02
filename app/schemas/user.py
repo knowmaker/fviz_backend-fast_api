@@ -4,16 +4,18 @@ from pydantic import BaseModel, EmailStr, Field
 
 class RegisterRequest(BaseModel):
     email: EmailStr
-    password: str = Field(min_length=6, max_length=128)
 
 
-class ConfirmRequest(BaseModel):
+class ResetPasswordRequest(BaseModel):
     email: EmailStr
-    code: str = Field(min_length=6, max_length=6, pattern=r"^\d{6}$")
 
 
 class LoginRequest(BaseModel):
     email: EmailStr
+    password: str = Field(min_length=6, max_length=128)
+
+
+class DeleteAccountRequest(BaseModel):
     password: str = Field(min_length=6, max_length=128)
 
 
@@ -28,7 +30,6 @@ class UserRead(BaseModel):
     last_name: str | None = None
     first_name: str | None = None
     patronymic: str | None = None
-    is_confirmed: bool
     is_admin: bool
 
     class Config:

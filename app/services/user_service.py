@@ -1,12 +1,12 @@
 # app/services/user_service.py
+import secrets
+import string
 from sqlalchemy.orm import Session
 
 from app.core.security import (
     hash_password,
     verify_password,
     create_access_token,
-    generate_confirmation_code,
-    verify_confirmation_code,
 )
 from app.models.user import User
 from app.schemas.user import UserUpdate
@@ -16,87 +16,64 @@ def _norm_email(email: str) -> str:
     return email.strip().lower()
 
 
-def register_user(db: Session, email: str, password: str) -> User:
-    """
-    Создаёт пользователя с is_confirmed=False и печатает код в консоль.
+def _generate_password(length: int = 12) -> str:
+    alphabet = string.ascii_letters + string.digits
+    return "".join(secrets.choice(alphabet) for _ in range(length))
 
-    Если пользователь уже существует:
-      - confirmed=True  -> ошибка
-      - confirmed=False -> "переотправка" кода (печатаем заново), пользователя не меняем
-    """
+
+def register_user(db: Session, email: str) -> User:
     email_norm = _norm_email(email)
     existing = db.query(User).filter(User.email == email_norm).first()
-
     if existing:
-        if existing.is_confirmed:
-            raise ValueError("User already registered and confirmed")
+        raise ValueError("User already registered")
 
-        code = generate_confirmation_code(existing.email)
-        print(f"[CONFIRM CODE] email={existing.email} code={code}")
-        return existing
+    plain_password = _generate_password()
 
     user = User(
         email=email_norm,
-        password=hash_password(password),
-        is_confirmed=False,
+        password=hash_password(plain_password),
         is_admin=False,
     )
     db.add(user)
     db.commit()
     db.refresh(user)
 
-    code = generate_confirmation_code(user.email)
-    print(f"[CONFIRM CODE] email={user.email} code={code}")
+    print(f"[REGISTER EMAIL] email={user.email}")
+    print(f"[REGISTER PASSWORD] password={plain_password}")
 
     return user
 
 
-def confirm_user(db: Session, email: str, code: str) -> bool:
-    """
-    Подтверждает пользователя, если код верный.
-    Код не храним: валидируем через HMAC.
-    """
+def reset_password(db: Session, email: str) -> bool:
     email_norm = _norm_email(email)
     user = db.query(User).filter(User.email == email_norm).first()
     if not user:
         return False
 
-    if user.is_confirmed:
-        return True
+    plain_password = _generate_password()
+    user.password = hash_password(plain_password)
 
-    if not verify_confirmation_code(user.email, code):
-        return False
-
-    user.is_confirmed = True
     db.add(user)
     db.commit()
+
+    print(f"[RESET EMAIL] email={user.email}")
+    print(f"[RESET PASSWORD] password={plain_password}")
+
     return True
 
 
 def login_user(db: Session, email: str, password: str) -> str | None:
-    """
-    Возвращает JWT, если:
-      - пользователь существует
-      - пароль верный
-      - пользователь подтверждён
-    """
     email_norm = _norm_email(email)
     user = db.query(User).filter(User.email == email_norm).first()
     if not user:
         return None
     if not verify_password(password, user.password):
         return None
-    if not user.is_confirmed:
-        return None
 
     return create_access_token(user_id=user.id)
 
 
 def update_user_profile(db: Session, user: User, data: UserUpdate) -> User:
-    """
-    Обновляем профиль (email нельзя).
-    Если password передан — меняем пароль.
-    """
     if data.last_name is not None:
         user.last_name = data.last_name
     if data.first_name is not None:
@@ -111,3 +88,12 @@ def update_user_profile(db: Session, user: User, data: UserUpdate) -> User:
     db.commit()
     db.refresh(user)
     return user
+
+
+def delete_user_account(db: Session, user: User, password: str) -> bool:
+    if not verify_password(password, user.password):
+        return False
+
+    db.delete(user)
+    db.commit()
+    return True

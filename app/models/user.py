@@ -14,7 +14,6 @@ class User(Base):
     last_name = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
     patronymic = Column(String, nullable=True)
-    is_confirmed = Column(Boolean, default=False, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
 
     laws = relationship("Law", back_populates="user")
