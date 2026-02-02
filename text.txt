@@ -51,7 +51,6 @@ id
 title (строка)
 system_type_id (FK на system_types.id)
 is_active (булева)
-is_public (булева)
 user_id (FK на users.id)
 
 Таблица quantities_in_represents PRIMARY KEY (represent_id, active_quantity_id)

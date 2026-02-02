@@ -27,7 +27,6 @@ def create_user_represent(db: Session, user_id: int, data: RepresentCreate) -> R
         title=data.title,
         system_type_id=data.system_type_id,
         is_active=data.is_active,
-        is_public=data.is_public,
         user_id=user_id,
     )
     rep.quantities = quantities
@@ -48,9 +47,6 @@ def update_user_represent(db: Session, user_id: int, represent_id: int, data: Re
 
     if data.is_active is not None:
         rep.is_active = data.is_active
-
-    if data.is_public is not None:
-        rep.is_public = data.is_public
 
     if data.quantity_ids is not None:
         quantities = db.query(Quantity).filter(Quantity.id.in_(data.quantity_ids)).all()
@@ -104,7 +100,6 @@ def get_active_view_public(db: Session) -> tuple[Represent, list[Quantity]]:
         "title": "Случайное",
         "system_type_id": system_type_id,
         "is_active": False,
-        "is_public": False,
         "user_id": 0,
     }
     return data, quantities

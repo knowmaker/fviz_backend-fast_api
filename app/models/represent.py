@@ -18,7 +18,6 @@ class Represent(Base):
         index=True,
     )
     is_active = Column(Boolean, default=True, nullable=False)
-    is_public = Column(Boolean, default=False, nullable=False)
     user_id = Column(
         Integer,
         ForeignKey("users.id"),
