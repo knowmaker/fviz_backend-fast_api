@@ -8,7 +8,6 @@ from app.schemas.quantity import QuantityCreate, QuantityUpdate
 def get_quantities_by_system_type_by_lt_id(db: Session, system_type_id: int, lt_id: int) -> list[Quantity]:
     return (
         db.query(Quantity)
-        .options(joinedload(Quantity.gk))
         .filter(Quantity.lt_id == lt_id, Quantity.system_type_id == system_type_id)
         .order_by(Quantity.id.asc())
         .all()

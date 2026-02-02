@@ -32,10 +32,6 @@ class QuantityReadWithLTGK(QuantityRead):
     gk: GKRead
 
 
-class QuantityReadWithGK(QuantityRead):
-    gk: GKRead
-
-
 class QuantityCreate(BaseModel):
     symbol: str = Field(min_length=1, max_length=255)
     name: str = Field(min_length=1, max_length=255)

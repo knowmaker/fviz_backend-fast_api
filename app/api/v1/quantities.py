@@ -8,7 +8,6 @@ from app.schemas.quantity import (
     QuantityCreate,
     QuantityUpdate,
     QuantityReadWithLTGK,
-    QuantityReadWithGK,
     QuantityRead,
 )
 from app.services.quantity_service import (
@@ -22,7 +21,7 @@ from app.services.quantity_service import (
 router = APIRouter()
 
 
-@router.get("/by-system-type/{system_type_id}/by-lt/{lt_id}", response_model=list[QuantityReadWithGK])
+@router.get("/by-system-type/{system_type_id}/by-lt/{lt_id}", response_model=list[QuantityRead])
 def read_quantities_by_system_type_by_lt(
     system_type_id: int,
     lt_id: int,
