@@ -5,7 +5,7 @@ from app.schemas.lt import LTRead
 from app.schemas.gk import GKRead
 
 # Разрешаем: -2, 0, 10, 1/2, -3/4
-FRACTION_RE = r"^-?\d+(?:/\d+)?$"
+FRACTION_RE = r"^-?(?:100|[1-9]?\d)(?:/(?:100|[1-9]?\d))?$"
 
 
 class QuantityRead(BaseModel):
