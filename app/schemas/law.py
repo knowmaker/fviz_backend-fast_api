@@ -11,7 +11,6 @@ class LawRead(BaseModel):
     third_quantity_id: int
     fourth_quantity_id: int
 
-    user_id: int
     law_group_id: int
     system_type_id: int
 

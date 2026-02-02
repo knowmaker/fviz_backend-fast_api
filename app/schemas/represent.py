@@ -8,7 +8,6 @@ class RepresentRead(BaseModel):
     title: str
     system_type_id: int
     is_active: bool
-    user_id: int
 
     class Config:
         from_attributes = True
