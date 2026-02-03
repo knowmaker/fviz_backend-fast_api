@@ -25,7 +25,8 @@ def read_active_view(
 ):
     if current_user is not None:
         rep, quantities = get_active_view_for_user(db, user_id=current_user.id)
-        return RepresentViewResponse(represent=rep, quantities=quantities)
+        if rep is not None:
+            return RepresentViewResponse(represent=rep, quantities=quantities)
 
     rep, quantities = get_active_view_public(db)
     return RepresentViewResponse(represent=rep, quantities=quantities)
