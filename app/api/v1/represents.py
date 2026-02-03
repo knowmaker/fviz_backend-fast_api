@@ -12,11 +12,14 @@ from app.services.represent_service import (
     update_user_represent,
     delete_user_represent,
     get_active_view_for_user,
+    get_active_view_for_user_by_system_type,
     get_active_view_public,
+    get_active_view_public_by_system_type,
     get_view_by_represent_id_for_user,
 )
 
 router = APIRouter()
+
 
 @router.get("/view", response_model=RepresentViewResponse)
 def read_active_view(
@@ -31,6 +34,24 @@ def read_active_view(
     rep, quantities = get_active_view_public(db)
     return RepresentViewResponse(represent=rep, quantities=quantities)
 
+
+@router.get("/view/by-system-type/{system_type_id}", response_model=RepresentViewResponse)
+def read_active_view_by_system_type(
+    system_type_id: int,
+    db: Session = Depends(get_db),
+    current_user: User | None = Depends(get_optional_current_user),
+):
+    if current_user is not None:
+        rep, quantities = get_active_view_for_user_by_system_type(
+            db, user_id=current_user.id, system_type_id=system_type_id
+        )
+        if rep is not None:
+            return RepresentViewResponse(represent=rep, quantities=quantities)
+
+    rep, quantities = get_active_view_public_by_system_type(db, system_type_id=system_type_id)
+    return RepresentViewResponse(represent=rep, quantities=quantities)
+
+
 @router.get("/{represent_id}/view", response_model=RepresentViewResponse)
 def read_represent_view_by_id(
     represent_id: int,
@@ -43,6 +64,7 @@ def read_represent_view_by_id(
 
     rep, quantities = result
     return RepresentViewResponse(represent=rep, quantities=quantities)
+
 
 @router.get("/by-system-type/{system_type_id}", response_model=list[RepresentRead])
 def read_my_represents_by_system_type(

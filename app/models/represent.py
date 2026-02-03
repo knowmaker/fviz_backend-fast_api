@@ -1,5 +1,5 @@
 # app/models/represent.py
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -24,7 +24,7 @@ class Represent(Base):
         nullable=False,
         index=True,
     )
-
+    updated_at = Column(DateTime(timezone=True), nullable=True)
     system_type = relationship("SystemType", back_populates="represents")
     user = relationship("User", back_populates="represents")
 

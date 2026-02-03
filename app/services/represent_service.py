@@ -1,4 +1,6 @@
 # app/services/represent_service.py
+from datetime import datetime, timezone
+
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -29,6 +31,8 @@ def create_user_represent(db: Session, user_id: int, data: RepresentCreate) -> R
         is_active=data.is_active,
         user_id=user_id,
     )
+    rep.updated_at = datetime.now(timezone.utc)
+
     rep.quantities = quantities
 
     db.add(rep)
@@ -52,6 +56,8 @@ def update_user_represent(db: Session, user_id: int, represent_id: int, data: Re
         quantities = db.query(Quantity).filter(Quantity.id.in_(data.quantity_ids)).all()
         rep.quantities = quantities
 
+    rep.updated_at = datetime.now(timezone.utc)
+
     db.add(rep)
     db.commit()
     db.refresh(rep)
@@ -67,16 +73,37 @@ def delete_user_represent(db: Session, user_id: int, represent_id: int) -> bool:
     db.commit()
     return True
 
+
 def get_active_view_for_user(db: Session, user_id: int) -> tuple[Represent | None, list[Quantity]]:
     rep = (
         db.query(Represent)
         .filter(Represent.user_id == user_id, Represent.is_active.is_(True))
-        .order_by(Represent.id.desc())
+        .order_by(Represent.updated_at.desc().nullslast(), Represent.id.desc())
         .first()
     )
     if not rep:
         return None, []
     return rep, list(rep.quantities)
+
+
+def get_active_view_for_user_by_system_type(
+    db: Session,
+    user_id: int,
+    system_type_id: int,
+) -> tuple[Represent | None, list[Quantity]]:
+    rep = (
+        db.query(Represent)
+        .filter(
+            Represent.user_id == user_id,
+            Represent.system_type_id == system_type_id,
+            Represent.is_active.is_(True),
+        )
+        .first()
+    )
+    if not rep:
+        return None, []
+    return rep, list(rep.quantities)
+
 
 def get_active_view_public(db: Session) -> tuple[Represent, list[Quantity]]:
     system_type_id = (
@@ -87,6 +114,10 @@ def get_active_view_public(db: Session) -> tuple[Represent, list[Quantity]]:
         .scalar()
     )
 
+    return get_active_view_public_by_system_type(db, system_type_id=system_type_id)
+
+
+def get_active_view_public_by_system_type(db: Session, system_type_id: int) -> tuple[dict, list[Quantity]]:
     quantities = (
         db.query(Quantity)
         .filter(Quantity.system_type_id == system_type_id)
@@ -103,6 +134,7 @@ def get_active_view_public(db: Session) -> tuple[Represent, list[Quantity]]:
         "user_id": 0,
     }
     return data, quantities
+
 
 def get_view_by_represent_id_for_user(
     db: Session,
