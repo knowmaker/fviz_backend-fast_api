@@ -52,8 +52,12 @@ def seed_system_types(db: Session) -> None:
     if db.query(SystemType).first():
         return
 
-    system_type = SystemType(name="MLTI система")
-    db.add(system_type)
+    system_types = [
+        SystemType(name="MLTI"),
+        SystemType(name="LTM"),
+    ]
+
+    db.add_all(system_types)
     db.commit()
 
 def seed_gk(db: Session, csv_path: str | None = None) -> None:
@@ -112,7 +116,6 @@ def seed_quantities(db: Session, csv_path: str | None = None) -> None:
         for row in reader:
             rows.append(
                 Quantity(
-                    id=int(row["id"]),
                     symbol=row["symbol"],
                     name=row["name"],
                     unit=row["unit"],
