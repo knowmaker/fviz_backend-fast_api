@@ -89,7 +89,7 @@ def seed_gk(db: Session, csv_path: str | None = None) -> None:
                     k_indicate=int(row["k_indicate"]),
                     name=row["name"],
                     color=row["color"],
-                    system_type_id=1,
+                    system_type_id=row["system_type_id"],
                 )
             )
 
