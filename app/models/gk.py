@@ -9,8 +9,8 @@ class GK(Base):
     __tablename__ = "gk"
 
     id = Column(Integer, primary_key=True, index=True)
-    g_indicate = Column(Integer, nullable=False)
-    k_indicate = Column(Integer, nullable=False)
+    g_indicate = Column(String, nullable=False)
+    k_indicate = Column(String, nullable=False)
     name = Column(String, nullable=False)
     color = Column(String(7), nullable=False)  # формат "#RRGGBB"
 

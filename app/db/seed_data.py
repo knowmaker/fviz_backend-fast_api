@@ -85,11 +85,11 @@ def seed_gk(db: Session, csv_path: str | None = None) -> None:
         for row in reader:
             rows.append(
                 GK(
-                    g_indicate=int(row["g_indicate"]),
-                    k_indicate=int(row["k_indicate"]),
+                    g_indicate=row["g_indicate"],
+                    k_indicate=row["k_indicate"],
                     name=row["name"],
                     color=row["color"],
-                    system_type_id=row["system_type_id"],
+                    system_type_id=int(row["system_type_id"]),
                 )
             )
 
