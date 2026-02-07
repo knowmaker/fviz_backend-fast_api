@@ -7,8 +7,8 @@ HEX_COLOR_RE = r"^#[0-9a-fA-F]{6}$"
 
 class GKRead(BaseModel):
     id: int
-    g_indicate: int
-    k_indicate: int
+    g_indicate: str
+    k_indicate: str
     name: str
     color: str
     system_type_id: int
