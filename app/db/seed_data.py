@@ -45,10 +45,6 @@ def seed_lt(db: Session, csv_path: str | None = None) -> None:
         db.commit()
 
 def seed_system_types(db: Session) -> None:
-    """
-    Заполняет таблицу system_types.
-    Если таблица НЕ пуста — ничего не делает.
-    """
     if db.query(SystemType).first():
         return
 
@@ -61,11 +57,6 @@ def seed_system_types(db: Session) -> None:
     db.commit()
 
 def seed_gk(db: Session, csv_path: str | None = None) -> None:
-    """
-    Заполняет таблицу gk из CSV.
-    Логика как у lt: если таблица НЕ пуста — ничего не делаем.
-    system_type_id всегда = 1.
-    """
     if db.query(GK).first():
         return
 
@@ -125,7 +116,7 @@ def seed_quantities(db: Session, csv_path: str | None = None) -> None:
                     i_indicate=row["i_indicate"],
                     lt_id=int(row["lt_id"]),
                     gk_id=int(row["gk_id"]),
-                    system_type_id=1,
+                    system_type_id=int(row["system_type_id"]),
                 )
             )
 
