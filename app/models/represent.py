@@ -17,7 +17,6 @@ class Represent(Base):
         nullable=False,
         index=True,
     )
-    is_active = Column(Boolean, default=True, nullable=False)
     user_id = Column(
         Integer,
         ForeignKey("users.id"),

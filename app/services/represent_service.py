@@ -28,7 +28,6 @@ def create_user_represent(db: Session, user_id: int, data: RepresentCreate) -> R
     rep = Represent(
         title=data.title,
         system_type_id=data.system_type_id,
-        is_active=data.is_active,
         user_id=user_id,
     )
     rep.updated_at = datetime.now(timezone.utc)
@@ -48,9 +47,6 @@ def update_user_represent(db: Session, user_id: int, represent_id: int, data: Re
 
     if data.title is not None:
         rep.title = data.title
-
-    if data.is_active is not None:
-        rep.is_active = data.is_active
 
     if data.quantity_ids is not None:
         quantities = db.query(Quantity).filter(Quantity.id.in_(data.quantity_ids)).all()
@@ -77,12 +73,18 @@ def delete_user_represent(db: Session, user_id: int, represent_id: int) -> bool:
 def get_active_view_for_user(db: Session, user_id: int) -> tuple[Represent | None, list[Quantity]]:
     rep = (
         db.query(Represent)
-        .filter(Represent.user_id == user_id, Represent.is_active.is_(True))
+        .filter(Represent.user_id == user_id)
         .order_by(Represent.updated_at.desc().nullslast(), Represent.id.desc())
         .first()
     )
     if not rep:
         return None, []
+
+    rep.updated_at = datetime.now(timezone.utc)
+    db.add(rep)
+    db.commit()
+    db.refresh(rep)
+
     return rep, list(rep.quantities)
 
 
@@ -96,12 +98,18 @@ def get_active_view_for_user_by_system_type(
         .filter(
             Represent.user_id == user_id,
             Represent.system_type_id == system_type_id,
-            Represent.is_active.is_(True),
         )
+        .order_by(Represent.updated_at.desc().nullslast(), Represent.id.desc())
         .first()
     )
     if not rep:
         return None, []
+
+    rep.updated_at = datetime.now(timezone.utc)
+    db.add(rep)
+    db.commit()
+    db.refresh(rep)
+
     return rep, list(rep.quantities)
 
 
@@ -117,7 +125,7 @@ def get_active_view_public(db: Session) -> tuple[Represent, list[Quantity]]:
     return get_active_view_public_by_system_type(db, system_type_id=system_type_id)
 
 
-def get_active_view_public_by_system_type(db: Session, system_type_id: int) -> tuple[dict, list[Quantity]]:
+def get_active_view_public_by_system_type(db: Session, system_type_id: int) -> tuple[Represent, list[Quantity]]:
     quantities = (
         db.query(Quantity)
         .filter(Quantity.system_type_id == system_type_id)

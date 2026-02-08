@@ -75,18 +75,6 @@ def read_my_represents_by_system_type(
     return get_user_represents_by_system_type(db, user_id=current_user.id, system_type_id=system_type_id)
 
 
-@router.get("/{represent_id}", response_model=RepresentRead)
-def read_my_represent_by_id(
-    represent_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    rep = get_user_represent_by_id(db, user_id=current_user.id, represent_id=represent_id)
-    if not rep:
-        raise HTTPException(status_code=404, detail="Represent not found")
-    return rep
-
-
 @router.post("/", response_model=RepresentRead, status_code=status.HTTP_201_CREATED)
 def create_my_represent(
     payload: RepresentCreate,
