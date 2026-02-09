@@ -1,5 +1,5 @@
 # app/models/gk.py
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -9,8 +9,8 @@ class GK(Base):
     __tablename__ = "gk"
 
     id = Column(Integer, primary_key=True, index=True)
-    g_indicate = Column(String, nullable=False)
-    k_indicate = Column(String, nullable=False)
+    g_indicate = Column(Numeric(4, 1), nullable=False)
+    k_indicate = Column(Numeric(4, 1), nullable=False)
     name = Column(String, nullable=False)
     color = Column(String(7), nullable=False)  # формат "#RRGGBB"
 

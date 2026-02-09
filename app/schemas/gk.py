@@ -1,4 +1,5 @@
 # app/schemas/gk.py
+from decimal import Decimal
 from pydantic import BaseModel, Field
 
 
@@ -7,8 +8,8 @@ HEX_COLOR_RE = r"^#[0-9a-fA-F]{6}$"
 
 class GKRead(BaseModel):
     id: int
-    g_indicate: str
-    k_indicate: str
+    g_indicate: Decimal
+    k_indicate: Decimal
     name: str
     color: str
     system_type_id: int

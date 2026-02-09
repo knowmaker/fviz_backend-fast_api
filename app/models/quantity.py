@@ -1,5 +1,5 @@
 # app/models/quantity.py
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -13,11 +13,10 @@ class Quantity(Base):
     name = Column(String, nullable=False)
     unit = Column(String, nullable=False)
 
-    # Храним целые и дроби как строки: "1", "-2", "1/2" и т.п.
-    m_indicate = Column(String, nullable=False)
-    l_indicate = Column(String, nullable=False)
-    t_indicate = Column(String, nullable=False)
-    i_indicate = Column(String, nullable=False)
+    m_indicate = Column(Numeric(4, 1), nullable=False)
+    l_indicate = Column(Numeric(4, 1), nullable=False)
+    t_indicate = Column(Numeric(4, 1), nullable=False)
+    i_indicate = Column(Numeric(4, 1), nullable=False)
 
     lt_id = Column(Integer, ForeignKey("lt.id"), nullable=False, index=True)
     gk_id = Column(Integer, ForeignKey("gk.id"), nullable=False, index=True)
