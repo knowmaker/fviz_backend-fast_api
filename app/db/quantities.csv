@@ -1,4 +1,4 @@
-"id","symbol","name","unit","m_indicate","l_indicate","t_indicate","i_indicate","lt_id","gk_id","system_type_id"
+"id","symbol","name","unit","m_indicate_auto","l_indicate_auto","t_indicate_auto","i_indicate_auto","lt_id","gk_id","system_type_id"
 1,"q<sup>2</sup>","(Электр. заряд)<sup>2</sup>","Кл<sup>2</sup>","0","0","2","2",129,8,1
 2,"(Il)<sup>2</sup>","(Элемент тока)<sup>2</sup>","А<sup>2</sup>*м<sup>2</sup>","0","2","0","2",131,8,1
 3,"С","Емкость","Ф","-1","-2","4","2",144,7,1

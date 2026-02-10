@@ -12,10 +12,10 @@ class QuantityRead(BaseModel):
     name: str
     unit: str
 
-    m_indicate: Decimal
-    l_indicate: Decimal
-    t_indicate: Decimal
-    i_indicate: Decimal
+    m_indicate_auto: Decimal
+    l_indicate_auto: Decimal
+    t_indicate_auto: Decimal
+    i_indicate_auto: Decimal
 
     lt_id: int
     gk_id: int
@@ -31,14 +31,14 @@ class QuantityReadWithLTGK(QuantityRead):
 
 
 class QuantityCreate(BaseModel):
-    symbol: str = Field(min_length=1, max_length=255)
-    name: str = Field(min_length=1, max_length=255)
-    unit: str = Field(min_length=1, max_length=255)
+    symbol: str = Field(max_length=255)
+    name: str = Field(max_length=255)
+    unit: str = Field(max_length=255)
 
-    m_indicate: Decimal
-    l_indicate: Decimal
-    t_indicate: Decimal
-    i_indicate: Decimal
+    m_indicate_auto: Decimal
+    l_indicate_auto: Decimal
+    t_indicate_auto: Decimal
+    i_indicate_auto: Decimal
 
     lt_id: int
     gk_id: int
@@ -50,10 +50,10 @@ class QuantityUpdate(BaseModel):
     name: str | None = Field(default=None, max_length=255)
     unit: str | None = Field(default=None, max_length=255)
 
-    m_indicate: Decimal | None = None
-    l_indicate: Decimal | None = None
-    t_indicate: Decimal | None = None
-    i_indicate: Decimal | None = None
+    m_indicate_auto: Decimal | None = None
+    l_indicate_auto: Decimal | None = None
+    t_indicate_auto: Decimal | None = None
+    i_indicate_auto: Decimal | None = None
 
     lt_id: int | None = None
     gk_id: int | None = None

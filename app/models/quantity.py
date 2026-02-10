@@ -13,10 +13,10 @@ class Quantity(Base):
     name = Column(String, nullable=False)
     unit = Column(String, nullable=False)
 
-    m_indicate = Column(Numeric(4, 1), nullable=False)
-    l_indicate = Column(Numeric(4, 1), nullable=False)
-    t_indicate = Column(Numeric(4, 1), nullable=False)
-    i_indicate = Column(Numeric(4, 1), nullable=False)
+    m_indicate_auto = Column(Numeric(4, 1), nullable=False)
+    l_indicate_auto = Column(Numeric(4, 1), nullable=False)
+    t_indicate_auto = Column(Numeric(4, 1), nullable=False)
+    i_indicate_auto = Column(Numeric(4, 1), nullable=False)
 
     lt_id = Column(Integer, ForeignKey("lt.id"), nullable=False, index=True)
     gk_id = Column(Integer, ForeignKey("gk.id"), nullable=False, index=True)

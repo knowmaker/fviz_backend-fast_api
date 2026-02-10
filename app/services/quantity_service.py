@@ -28,10 +28,10 @@ def create_quantity(db: Session, data: QuantityCreate) -> Quantity:
         symbol=data.symbol,
         name=data.name,
         unit=data.unit,
-        m_indicate=data.m_indicate,
-        l_indicate=data.l_indicate,
-        t_indicate=data.t_indicate,
-        i_indicate=data.i_indicate,
+        m_indicate_auto=data.m_indicate_auto,
+        l_indicate_auto=data.l_indicate_auto,
+        t_indicate_auto=data.t_indicate_auto,
+        i_indicate_auto=data.i_indicate_auto,
         lt_id=data.lt_id,
         gk_id=data.gk_id,
         system_type_id=data.system_type_id,
@@ -55,14 +55,14 @@ def update_quantity(db: Session, quantity_id: int, data: QuantityUpdate) -> Quan
     if data.unit is not None:
         q.unit = data.unit
 
-    if data.m_indicate is not None:
-        q.m_indicate = data.m_indicate
-    if data.l_indicate is not None:
-        q.l_indicate = data.l_indicate
-    if data.t_indicate is not None:
-        q.t_indicate = data.t_indicate
-    if data.i_indicate is not None:
-        q.i_indicate = data.i_indicate
+    if data.m_indicate_auto is not None:
+        q.m_indicate_auto = data.m_indicate_auto
+    if data.l_indicate_auto is not None:
+        q.l_indicate_auto = data.l_indicate_auto
+    if data.t_indicate_auto is not None:
+        q.t_indicate_auto = data.t_indicate_auto
+    if data.i_indicate_auto is not None:
+        q.i_indicate_auto = data.i_indicate_auto
 
     if data.lt_id is not None:
         q.lt_id = data.lt_id
