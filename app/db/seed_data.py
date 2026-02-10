@@ -49,8 +49,8 @@ def seed_system_types(db: Session) -> None:
         return
 
     system_types = [
-        SystemType(name="MLTI"),
-        SystemType(name="LTM"),
+        SystemType(name="MLTI", orderliness="MLTI"),
+        SystemType(name="LTM", orderliness="LMT"),
     ]
 
     db.add_all(system_types)
