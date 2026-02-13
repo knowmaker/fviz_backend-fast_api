@@ -25,6 +25,7 @@ def create_user_law(db: Session, user_id: int, data: LawCreate) -> Law:
         second_quantity_id=data.second_quantity_id,
         third_quantity_id=data.third_quantity_id,
         fourth_quantity_id=data.fourth_quantity_id,
+        quantity_ids_sorted=sorted([data.first_quantity_id, data.second_quantity_id, data.third_quantity_id, data.fourth_quantity_id]),
         user_id=user_id,
         law_group_id=data.law_group_id,
         system_type_id=data.system_type_id,
@@ -43,7 +44,7 @@ def update_user_law(db: Session, user_id: int, law_id: int, data: LawUpdate) -> 
     if data.name is not None:
         law.name = data.name
 
-    if data.law_group_id is not None:
+    if "law_group_id" in data.model_fields_set:
         law.law_group_id = data.law_group_id
 
     db.add(law)

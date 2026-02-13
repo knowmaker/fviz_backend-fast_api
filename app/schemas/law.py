@@ -10,6 +10,7 @@ class LawRead(BaseModel):
     second_quantity_id: int
     third_quantity_id: int
     fourth_quantity_id: int
+    quantity_ids_sorted: list[int]
 
     law_group_id: int
     system_type_id: int
@@ -26,7 +27,7 @@ class LawCreate(BaseModel):
     third_quantity_id: int
     fourth_quantity_id: int
 
-    law_group_id: int
+    law_group_id: int | None
     system_type_id: int
 
 

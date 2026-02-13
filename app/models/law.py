@@ -1,5 +1,6 @@
 # app/models/law.py
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -8,6 +9,10 @@ from app.db.base import Base
 class Law(Base):
     __tablename__ = "laws"
 
+    __table_args__ = (
+        UniqueConstraint("user_id", "quantity_ids_sorted", name="uq_laws_user_sorted_array"),
+    )
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
 
@@ -15,6 +20,7 @@ class Law(Base):
     second_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=False)
     third_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=False)
     fourth_quantity_id = Column(Integer, ForeignKey("quantities.id"), nullable=False)
+    quantity_ids_sorted = Column(ARRAY(Integer), nullable=False)
 
     user_id = Column(
         Integer,
@@ -25,7 +31,7 @@ class Law(Base):
     law_group_id = Column(
         Integer,
         ForeignKey("law_groups.id"),
-        nullable=False,
+        nullable=True,
         index=True,
     )
     system_type_id = Column(
