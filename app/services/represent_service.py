@@ -136,7 +136,7 @@ def get_active_view_public_by_system_type(db: Session, system_type_id: int) -> t
 
     data = {
         "id": 0,
-        "title": "Случайное",
+        "title": "Демонстрационное",
         "system_type_id": system_type_id,
         "is_active": False,
         "user_id": 0,
