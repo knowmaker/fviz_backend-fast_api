@@ -8,6 +8,8 @@ from app.core.security import (
     verify_password,
     create_access_token,
 )
+from app.core.email import send_email
+from app.core.config import settings
 from app.models.user import User
 from app.schemas.user import UserUpdate
 
@@ -34,13 +36,23 @@ def register_user(db: Session, email: str) -> User:
         password=hash_password(plain_password),
         is_admin=False,
     )
+
+    subject = f"{settings.PROJECT_NAME}: регистрация"
+    body = (
+        f"Здравствуйте!\n\n"
+        f"Вы зарегистрированы в {settings.PROJECT_NAME}.\n"
+        f"Ваш пароль: {plain_password}\n\n"
+        f"Если это были не вы — просто проигнорируйте письмо."
+    )
+
+    try:
+        send_email(to_email=user.email, subject=subject, body=body)
+    except Exception as e:
+        raise RuntimeError("Failed to send registration email") from e
+
     db.add(user)
     db.commit()
     db.refresh(user)
-
-    print(f"[REGISTER EMAIL] email={user.email}")
-    print(f"[REGISTER PASSWORD] password={plain_password}")
-
     return user
 
 
@@ -51,14 +63,24 @@ def reset_password(db: Session, email: str) -> bool:
         return False
 
     plain_password = _generate_password()
-    user.password = hash_password(plain_password)
+    new_hash = hash_password(plain_password)
 
+    subject = f"{settings.PROJECT_NAME}: восстановление пароля"
+    body = (
+        f"Здравствуйте!\n\n"
+        f"Ваш пароль был сброшен для {settings.PROJECT_NAME}.\n"
+        f"Новый пароль: {plain_password}\n\n"
+        f"Если это были не вы — срочно смените пароль после входа."
+    )
+
+    try:
+        send_email(to_email=user.email, subject=subject, body=body)
+    except Exception as e:
+        raise RuntimeError("Failed to send reset password email") from e
+
+    user.password = new_hash
     db.add(user)
     db.commit()
-
-    print(f"[RESET EMAIL] email={user.email}")
-    print(f"[RESET PASSWORD] password={plain_password}")
-
     return True
 
 
