@@ -12,7 +12,7 @@ class LawRead(BaseModel):
     fourth_quantity_id: int
     quantity_ids_sorted: list[int]
 
-    law_group_id: int
+    law_group_id: int | None
     system_type_id: int
 
     class Config:
